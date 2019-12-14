@@ -1,18 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System;
 using MemoCards.Data;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace MemoCards.Models
 {
     public class User : Item
     {
-        public string Email { get; protected set; }
-        public Password Password { get; protected set; }
-        public DateTime Created { get; protected set; }
+        private User()
+        {
+        }
 
         public User(string email, Password password)
         {
@@ -21,8 +17,13 @@ namespace MemoCards.Models
             Created = DateTime.Now;
             Obsolete = false;
         }
+
+        public string Email { get; protected set; }
+        public Password Password { get; protected set; }
+        public DateTime Created { get; protected set; }
     }
 
+    [Owned]
     public class Password
     {
         public byte[] Hash { get; set; }

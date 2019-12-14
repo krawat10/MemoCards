@@ -1,15 +1,19 @@
 ﻿using System;
-using MemoCards.Models;
+using MemoCards.Data;
 
-namespace MemoCards.Data
+namespace MemoCards.Models
 {
     public class MemoCard : Item
     {
-        public User User { get;  }
+        public User User { get; protected set; }
         public DateTime Created { get; protected set; }
         public DateTime Updated { get; protected set; }
         public string Name { get; protected set; }
         public string Description { get; protected set; }
+        private MemoCard()
+        {
+            
+        }
         public MemoCard(User user, string name, string description)
         {
             User = user;

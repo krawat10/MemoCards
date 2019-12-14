@@ -1,0 +1,13 @@
+﻿.card {
+    margin: 1px;
+}
+
+.card-link {
+    border: 1px solid transparent;
+    transition: linear 0.5s;
+    border-radius: 3px;
+}
+
+    .card-link:hover {
+        border: 1px solid black;
+    }

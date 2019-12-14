@@ -10,11 +10,6 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace MemoCards.Services
 {
-    public interface ITokenService
-    {
-        public string CreateToken(params Claim[] claims);
-    }
-
     public class TokenService : ITokenService
     {
         private readonly IConfiguration _configuration;
@@ -26,7 +21,7 @@ namespace MemoCards.Services
             _configuration = configuration;
             _claimTypeName = claimTypeName;
         }
-        public string CreateToken(params Claim[] claims)
+        public TokenDTO CreateToken(params Claim[] claims)
         {
             var secretKey = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("Secret"));
             _tokenHandler = new JwtSecurityTokenHandler();
@@ -34,14 +29,21 @@ namespace MemoCards.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
+                Issuer = nameof(MemoCards),
+                Audience = nameof(MemoCards),
                 Expires = DateTime.Now.AddHours(24),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKey),
                     SecurityAlgorithms.HmacSha512Signature)
             };
 
-            return _tokenHandler.WriteToken(_tokenHandler.CreateToken(tokenDescriptor));
+            var securityToken = _tokenHandler.CreateToken(tokenDescriptor);
+            return new TokenDTO
+            {
+                Value = _tokenHandler.WriteToken(securityToken),
+                Expires = securityToken.ValidTo
+            };
         }
 
-
+        
     }
 }

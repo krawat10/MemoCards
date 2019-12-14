@@ -1,6 +1,11 @@
+using System;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using AutoMapper;
 using MemoCards.Data;
+using MemoCards.Mapper;
 using MemoCards.Models;
 using MemoCards.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -10,6 +15,7 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 
@@ -33,21 +39,23 @@ namespace MemoCards
 
             services.AddControllersWithViews();
 
+            services.AddSingleton(provider => MapperConfig.Initialize());
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IMemoCardService, MemoCardService>();
             services.AddScoped<ITokenService, TokenService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddCookie(options => { options.LoginPath = "/Account/Login"; })
+//                .AddCookie(options => { options.LoginPath = "/Account/Login"; })
                 .AddJwtBearer(options =>
                 {
                     options.Events = new JwtBearerEvents
                     {
                         OnTokenValidated = async context =>
                         {
-                            var email = context
+                            var id = context
                                 .Principal
                                 .Claims
-                                .First(claim => claim.Type == nameof(User.Email))
+                                .First(claim => claim.Type == nameof(User.Id))
                                 .Value;
 
                             var service = context
@@ -55,16 +63,23 @@ namespace MemoCards
                                 .RequestServices
                                 .GetRequiredService<IUserService>();
 
-                            if (!await service.Exists(email)) context.Fail("Unauthorized");
+                            var user = await service.GetUser(Guid.Parse(id));
+
+                            if (user == null) context.Fail("Unauthorized");
+
+                            context.HttpContext.Items.Add(nameof(User), user);
                         }
                     };
                     var key = Encoding.ASCII.GetBytes(Configuration.GetValue<string>("Secret"));
                     options.SaveToken = true;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        RequireExpirationTime = true,
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
+                        ValidIssuer = nameof(MemoCards),
+                        ValidAudience = nameof(MemoCards),
                         IssuerSigningKey = new SymmetricSecurityKey(key)
                     };
                 });
@@ -88,27 +103,35 @@ namespace MemoCards
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+//            app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Static", "css")),
+                RequestPath = "/static/css"
+            });
             app.UseSpaStaticFiles();
 
             app.UseRouting();
 
             app.UseAuthentication();
-            app.UseIdentityServer();
+//            app.UseIdentityServer();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
+                    "static",
+                    "static/{action}/{filename}",
+                    defaults: new {controller = "File"});
+
+                endpoints.MapControllerRoute(
                     "default",
                     "{controller}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
             });
 
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";
-
                 if (env.IsDevelopment()) spa.UseReactDevelopmentServer("start");
             });
         }

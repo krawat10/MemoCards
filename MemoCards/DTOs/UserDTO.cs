@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MemoCards.Services;
 
 namespace MemoCards.DTOs
 {
-    public class UserDTO
+    public class UserDto
     {
+        public Guid Id { get; set; }
         public string Email { get; set; }
-        public string Token { get; set; }
+        public TokenDTO Token { get; set; }
     }
 }

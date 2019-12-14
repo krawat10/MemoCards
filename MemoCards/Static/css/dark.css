@@ -1,0 +1,7 @@
+﻿body { background-color: lightgray; }
+
+div.card { background-color: gray; }
+
+.form-control { background-color: cadetblue; }
+
+h1, h2, h3, h4, h5, h6, .text-muted { color: white !important; }
