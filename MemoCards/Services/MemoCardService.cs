@@ -44,8 +44,8 @@ namespace MemoCards.Services
         {
             var memoCard = await GetById(dto.Id);
 
-            memoCard.SetName(memoCard.Name);
-            memoCard.SetDescription(memoCard.Description);
+            memoCard.SetName(HttpUtility.HtmlEncode(memoCard.Name));
+            memoCard.SetDescription(HttpUtility.HtmlEncode(memoCard.Description));
 
             _context.Update(memoCard);
             await _context.SaveChangesAsync();
