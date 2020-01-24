@@ -12,6 +12,9 @@ export class Layout extends Component {
         <Container>
           {this.props.children}
         </Container>
+          <footer>
+              Memo Cards - Mateusz Krawczyk
+          </footer>
       </div>
     );
   }

@@ -1,0 +1,11 @@
+[
+
+  {"Key": "home", "Value": "Home" },
+  {"Key": "login", "Value": "Login" },
+  {"Key": "logout", "Value": "Logout" },
+  {"Key": "register", "Value": "Register" },
+  {"Key": "pleaseLogin", "Value": "Please login" },
+  {"Key": "typeEmailAndPassword", "Value": "Type your email and password:" },
+  {"Key": "createNewAccount", "Value": "Create a new account!" },
+  {"Key": "wait", "Value": "Please wait..." }
+]

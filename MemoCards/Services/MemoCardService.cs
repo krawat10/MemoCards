@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Web;
 using AutoMapper;
 using MemoCards.Data;
 using MemoCards.DTOs;
 using MemoCards.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 
 namespace MemoCards.Services
@@ -15,23 +19,37 @@ namespace MemoCards.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
-        private readonly IUserService _userService;
+        private readonly IWebHostEnvironment _environment;
 
-        public MemoCardService(ApplicationDbContext context, IUserService userService, IMapper mapper)
+        public MemoCardService(ApplicationDbContext context, IUserService userService, IMapper mapper, IWebHostEnvironment environment)
         {
             _context = context;
-            _userService = userService;
             _mapper = mapper;
+            _environment = environment;
+
+
         }
 
         public async Task<IEnumerable<MemoCardDto>> GetUserCards(User user)
         {
-            var memoCards = await _context.MemoCards.Where(card => card.User == user).ToListAsync();
+            // SELECT[m].[Id], [m].[Created], [m].[Description], [m].[Name], [m].[Obsolete], [m].[Updated], [m].[UserId]
+            // FROM[MemoCards] AS[m]
+            // INNER JOIN[Users] AS[u] ON[m].[UserId] = [u].[Id]
+            // WHERE[u].[Id] = Id
+            // ORDER BY[m].[Created] DESC
+            var memoCards = await _context
+                .MemoCards
+                .Where(card => card.User == user)
+                .OrderByDescending(card => card.Created)
+                .ToListAsync();
+
+
             return _mapper.Map<IEnumerable<MemoCardDto>>(memoCards);
         }
 
         public async Task<MemoCardDto> AddMemoCard(User user, MemoCardDto memoCard)
         {
+            // HttpUtility encode provided data to prevent storing HTML tags
             var card = new MemoCard(user, HttpUtility.HtmlEncode(memoCard.Name), HttpUtility.HtmlEncode(memoCard.Description));
 
             await _context.MemoCards.AddAsync(card);
@@ -44,9 +62,11 @@ namespace MemoCards.Services
         {
             var memoCard = await GetById(dto.Id);
 
-            memoCard.SetName(HttpUtility.HtmlEncode(memoCard.Name));
-            memoCard.SetDescription(HttpUtility.HtmlEncode(memoCard.Description));
+            memoCard.SetName(HttpUtility.HtmlEncode(HttpUtility.HtmlEncode(memoCard.Name)));
+            memoCard.SetDescription(HttpUtility.HtmlEncode(HttpUtility.HtmlEncode(memoCard.Description)));
 
+            // UPDATE[MemoCards] [Description] = Description, [Name] = Name, [Updated] = Updated
+            // WHERE[Id] = MemoIdId;
             _context.Update(memoCard);
             await _context.SaveChangesAsync();
         }

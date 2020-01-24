@@ -24,5 +24,6 @@ namespace MemoCards.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<MemoCard> MemoCards { get; set; }
+        public DbSet<Word> Words { get; set; }
     }
 }

@@ -1,10 +1,15 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
-import {del} from "../../services/apiRequest";
+import {del, put} from "../../services/apiRequest";
+import {Input} from "reactstrap";
 
 const MemoCardItem = ({memoCard, deleteMemoCard}) => {
-    const [error, setError] = useState('')
+    const [error, setError] = useState('');
+    const [editState, setEditState] = useState(false);
+    let [name, setName] = useState(memoCard.name);
+    let [description, setDescription] = useState(memoCard.description);
+    console.log(editState)
 
     async function remove() {
         try {
@@ -16,17 +21,57 @@ const MemoCardItem = ({memoCard, deleteMemoCard}) => {
         }
     }
 
-    return (
-        <div className="card" style={{width: '18rem'}}>
-            <div className="card-body">
-                <h5 className="card-title">{memoCard.name}</h5>
-                <div className="card-text">{memoCard.description}</div>
-                <a onClick={remove} className="card-link">Remove</a>
-                <div className="alert alert-danger" role="alert" style={{display: error === '' ? 'none' : ''}}>
-                    {error}
+    async function submit() {
+        try {
+            await put('/memo/' + memoCard.id, memoCard);
+        }
+        catch (e) {
+            setError(e.message);
+        }
+        setEditState(false);
+    }
+
+    if(editState)
+    {
+        return (
+            <div className="card" style={{width: '18rem'}}>
+                <div className="card-body">
+                    <Input
+                        name="name"
+                        bsSize="sm"
+                        value={name}
+                        onChange={e => setName(e.target.value)}
+                        placeholder="title"
+                    />
+                    <Input
+                        name="description"
+                        type="textarea"
+                        bsSize="sm"
+                        value={description}
+                        onChange={e => setDescription(e.target.value)}
+                        placeholder="description"
+                    />
+                    <a onClick={submit} className="card-link">Submit</a>
+                    <div className="alert alert-danger" role="alert" style={{display: error === '' ? 'none' : ''}}>
+                        {error}
+                    </div>
                 </div>
-            </div>
-        </div>)
+            </div>)
+    }
+    else {
+        return (
+            <div className="card" style={{width: '18rem'}}>
+                <div className="card-body">
+                    <h5 className="card-title">{name}</h5>
+                    <div className="card-text">{description}</div>
+                    <a onClick={remove} className="card-link">Remove</a>
+                    <a onClick={() => setEditState(true)} className="card-link">Edit</a>
+                    <div className="alert alert-danger" role="alert" style={{display: error === '' ? 'none' : ''}}>
+                        {error}
+                    </div>
+                </div>
+            </div>)
+    }
 };
 
 MemoCardItem.propTypes = {

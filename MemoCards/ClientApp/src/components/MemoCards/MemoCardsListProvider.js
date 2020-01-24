@@ -17,7 +17,7 @@ const MemoCardsListProvider = ({user, memoCardsState, language, initialize, dele
 
                 }
             }
-        };
+        }
         getMemoCards();
     }, [user]);
 

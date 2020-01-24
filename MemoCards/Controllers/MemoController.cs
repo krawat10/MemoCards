@@ -29,7 +29,7 @@ namespace MemoCards.Controllers
         {
             var user = HttpContext.Items["User"] as User;
 
-            return await _cardService.GetUserCards(user);
+            return await _cardService.GetUserCards(user); // Parsed to JSON
         }
 
         [HttpPut]
@@ -55,14 +55,13 @@ namespace MemoCards.Controllers
             return CreatedAtAction(nameof(Post), new {id = card.Id}, dto);
         }
 
-        [HttpPut]
-        public async Task Put(MemoCardDto dto)
+        [HttpPut("{id}")]
+        public async Task Put(MemoCardDto dto, string id)
         {
             await _cardService.UpdateMemoCard(dto);
         }
 
-        [HttpDelete]
-        [Route("{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
             var user = HttpContext.Items["User"] as User;

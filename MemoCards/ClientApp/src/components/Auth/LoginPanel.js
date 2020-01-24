@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Button, Form, FormGroup, Input} from 'reactstrap';
-import {history} from "../../App";
+import history from '../../history';
 
 const LoginPanel = ({onSubmit, title, description, language}) => {
     const [email, setEmail] = useState('');

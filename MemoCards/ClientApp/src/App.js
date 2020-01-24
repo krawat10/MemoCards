@@ -1,43 +1,50 @@
-import React from 'react';
-import {Route} from 'react-router';
+import React, {useState, useEffect} from 'react';
+import {Router, Route} from 'react-router-dom';
 import {Layout} from './components/Layout';
 import {Home} from './components/Home';
-import './custom.css'
+import './custom.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {BrowserRouter, Router} from "react-router-dom";
-import {createBrowserHistory} from 'history';
 import SignIn from "./components/Auth/SignIn";
 import SignUp from "./components/Auth/SignUp";
 import {connect} from "react-redux";
 import {login, setLanguage} from "./actions";
+import history from './history';
+import {get} from './services/apiRequest';
+import {languagesFilename} from "./reducers/language";
+import {getCookie, setCookie} from "./services/cookies";
+import {isEmpty} from 'lodash'
 
-
-const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
-export const history = createBrowserHistory();
-
+let isLanguageInitialized = false;
 const langHeader = navigator.language;
-const params = new URLSearchParams(window.location.search);
-const langParam = params.get('lang');
+const langParam = new URLSearchParams(window.location.search).get('lang');
+const langCookie = getCookie('lang');
+let language = 'en';
 
-const App = ({user, setLanguage, login}) => {
-    if(langParam) setLanguage(langParam);
-    else setLanguage(langHeader);
+const App = ({user, setDictionary, login}) => {
 
-    if(!user.isValid && localStorage.getItem('user')){
+    if (!isLanguageInitialized) {
+        if (!isEmpty(langHeader)) language = langHeader;
+        if (!isEmpty(langCookie)) language = langCookie;
+        if (!isEmpty(langParam)) language = langParam;
+        console.log(language);
+        setCookie('lang', language, 7); // Set language cookie
+        get('lang').then(value => setDictionary(value.root)); // Initialize translation
+        isLanguageInitialized = true;
+    }
+
+    if (!user.isValid && localStorage.getItem('user')) {
         const user = JSON.parse(localStorage.getItem('user'));
         login(user);
     }
 
     return (
-            <BrowserRouter basename={baseUrl}>
-                <Router history={history}>
-                    <Layout>
-                        <Route exact path='/' component={Home}/>
-                        <Route path='/login' render={() => <SignIn/>}/>
-                        <Route path='/register' component={() => <SignUp/>}/>
-                    </Layout>
-                </Router>
-            </BrowserRouter>
+        <Router history={history}>
+            <Layout>
+                <Route exact path='/' component={Home}/>
+                <Route path='/login' render={() => <SignIn/>}/>
+                <Route path='/register' component={() => <SignUp/>}/>
+            </Layout>
+        </Router>
     );
 };
 
@@ -48,7 +55,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    setLanguage: (language) => dispatch(setLanguage(language)),
+    setDictionary: (language) => dispatch(setLanguage(language)),
     login: (user) => dispatch(login(user))
 });
 

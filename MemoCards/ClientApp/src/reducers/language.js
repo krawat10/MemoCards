@@ -1,8 +1,9 @@
 import {actions} from '../actions';
 
-const en = {
+const defaultLang = {
     home: 'Home',
     login: 'Login',
+    logout: 'Logout',
     register: 'Register',
     pleaseLogin: 'Please login',
     typeEmailAndPassword: 'Type your email and password:',
@@ -10,32 +11,19 @@ const en = {
     wait: 'Please wait...'
 };
 
-const pl = {
-    home: 'Strona Główna',
-    login: 'Zaloguj',
-    register: 'Rejestracja',
-    pleaseLogin: 'Proszę się zalogować',
-    typeEmailAndPassword: 'Wprowadź email i hasło:',
-    createNewAccount: 'Stwórz nowe konto!',
-    wait: 'Proszę czekać...'
+export const languagesFilename = {
+    'en': 'en.xml',
+    'en-US': 'en.xml',
+    'en-GB': 'en.xml',
+    'pl': 'pl.xml',
 };
 
-export const languages = {
-    'en': en,
-    'en-US': en,
-    'en-GB': en,
-    'pl': pl,
-};
-
-const language = (state = languages['en'], action) => {
+const language = (state = defaultLang, action) => {
     switch (action.type) {
         case actions.SET_LANGUAGE:
-            if(languages.hasOwnProperty(action.language)){
-                return languages[action.language];
-            }
-            return state;
+            return action.language;
         default:
-            return state;
+            return state; //return dictionary
     }
 };
 

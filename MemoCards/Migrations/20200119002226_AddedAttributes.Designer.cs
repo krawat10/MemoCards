@@ -4,14 +4,16 @@ using MemoCards.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MemoCards.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200119002226_AddedAttributes")]
+    partial class AddedAttributes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,37 +81,10 @@ namespace MemoCards.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("MemoCards.Models.Word", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Key")
-                        .HasColumnName("Key")
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<short>("Language")
-                        .HasColumnName("Language")
-                        .HasColumnType("smallint");
-
-                    b.Property<bool>("Obsolete")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Value")
-                        .HasColumnName("Value")
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Words");
-                });
-
             modelBuilder.Entity("MemoCards.Models.MemoCard", b =>
                 {
                     b.HasOne("MemoCards.Models.User", "User")
-                        .WithMany("MemoCards")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

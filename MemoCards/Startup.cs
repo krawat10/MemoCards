@@ -45,7 +45,6 @@ namespace MemoCards
             services.AddScoped<ITokenService, TokenService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-//                .AddCookie(options => { options.LoginPath = "/Account/Login"; })
                 .AddJwtBearer(options =>
                 {
                     options.Events = new JwtBearerEvents
@@ -67,7 +66,7 @@ namespace MemoCards
 
                             if (user == null) context.Fail("Unauthorized");
 
-                            context.HttpContext.Items.Add(nameof(User), user);
+                            context.HttpContext.Items.Add(nameof(User), user); // Can be used by actions
                         }
                     };
                     var key = Encoding.ASCII.GetBytes(Configuration.GetValue<string>("Secret"));
@@ -107,9 +106,16 @@ namespace MemoCards
             app.UseStaticFiles();
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Static", "css")),
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot","Static", "css")),
                 RequestPath = "/static/css"
             });
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider =
+                    new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Static", "lang")),
+                RequestPath = "/static/xml"
+            });
+
             app.UseSpaStaticFiles();
 
             app.UseRouting();

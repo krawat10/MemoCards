@@ -8,6 +8,8 @@ namespace MemoCards.Data
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
+        [Column(name: "Id", TypeName = "uniqueidentifier")]
+
         public Guid Id { get; protected set; }
         public bool Obsolete { get; protected set; }
     }

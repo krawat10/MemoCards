@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <createNewAccount>Stwórz nowe konto!</createNewAccount>
+  <home>Strona Główna</home>
+  <login>Zaloguj</login>
+  <logout>Wyloguj</logout>
+  <pleaseLogin>Proszę się zalogować</pleaseLogin>
+  <register>Rejestracja</register>
+  <typeEmailAndPassword>Wprowadź email i hasło:</typeEmailAndPassword>
+  <wait>Proszę czekać...</wait>
+</root>

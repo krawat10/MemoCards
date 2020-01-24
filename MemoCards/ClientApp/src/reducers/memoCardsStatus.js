@@ -1,3 +1,4 @@
+"use strict";
 import {actions} from '../actions';
 
 export const MemoCardsStatus = {

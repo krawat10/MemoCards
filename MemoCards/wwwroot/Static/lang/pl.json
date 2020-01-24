@@ -1,0 +1,10 @@
+﻿[
+  { "Key": "home", "Value": "Strona Główna" },
+  { "Key": "login", "Value": "Zaloguj" },
+  { "Key": "logout", "Value": "Wyloguj" },
+  { "Key": "register", "Value": "Rejestracja" },
+  { "Key": "pleaseLogin", "Value": "Proszę się zalogować" },
+  { "Key": "typeEmailAndPassword", "Value": "Wprowadź email i hasło:" },
+  { "Key": "createNewAccount", "Value": "Stwórz nowe konto!" },
+  { "Key": "wait", "Value": "Proszę czekać..." }
+]

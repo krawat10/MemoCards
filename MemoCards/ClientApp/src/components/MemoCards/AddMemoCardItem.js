@@ -1,12 +1,43 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {addMemoCard} from "../../actions";
 import {connect} from "react-redux";
 import {Button, ButtonGroup, Input} from "reactstrap";
 import {post} from "../../services/apiRequest";
 
+const addPlus = (id) => {
+    const c = document.getElementById(id); // Adds to DOM
+    c.style.marginLeft = '4px';
+    c.style.marginBottom = '-7px';
+    // c.style.width = '27px';
+    const ctx = c.getContext("2d");
+    ctx.canvas.width = 25;
+    ctx.canvas.height = 27;
+    ctx.moveTo(0, 12);
+    ctx.lineTo(10, 12);
+    ctx.lineTo(10, 2);
+    ctx.lineTo(15, 2);
+    ctx.lineTo(15, 12);
+    ctx.lineTo(25, 12);
+    ctx.lineTo(25, 17);
+    ctx.lineTo(15, 17);
+    ctx.lineTo(15, 27);
+    ctx.lineTo(10, 27);
+    ctx.lineTo(10, 17);
+    ctx.lineTo(0, 17);
+    ctx.lineTo(0, 12);
+    ctx.fillStyle = "black";
+    ctx.fill();
+
+    ctx.stroke();
+};
+
 const AddMemoCardItem = ({user, dispatch}) => {
     let [name, setName] = useState('');
     let [description, setDescription] = useState('');
+
+    useEffect(() => {
+        addPlus('plus-icon');
+    });
 
     const clearInput = () => {
         setName('');
@@ -47,7 +78,9 @@ const AddMemoCardItem = ({user, dispatch}) => {
             />
             <br/>
             <ButtonGroup>
-                <Button size="sm" color="primary" onClick={add}>Add</Button>
+                <Button size="sm" color="primary" onClick={add}>
+                    Add <canvas id="plus-icon"/>
+                </Button>
                 <Button size="sm" color="secondary" onClick={clearInput}>Clear</Button>
             </ButtonGroup>
         </div>
@@ -57,7 +90,6 @@ const AddMemoCardItem = ({user, dispatch}) => {
 const mapStateToProps = state => ({
     user: state.user
 });
-
 
 
 export default connect(mapStateToProps)(AddMemoCardItem);

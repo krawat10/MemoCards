@@ -22,13 +22,18 @@ export const login = user => ({
     user
 });
 
+const LOGOUT = 'LOGOUT';
+export const logout = () => ({
+    type: LOGOUT
+});
+
 const SET_LANGUAGE = 'SET_LANGUAGE';
 export const setLanguage = language => ({
     type: SET_LANGUAGE,
     language
-})
+});
 
 
 export const actions = {
-    ADD_MEMO_CARD, DELETE_MEMO_CARD, INITIALIZE, LOGIN, SET_LANGUAGE
+    ADD_MEMO_CARD, DELETE_MEMO_CARD, INITIALIZE, LOGIN, LOGOUT, SET_LANGUAGE
 };
