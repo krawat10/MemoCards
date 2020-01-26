@@ -52,7 +52,7 @@ namespace MemoCards.Controllers
 
             card = await _cardService.AddMemoCard(user, dto);
 
-            return CreatedAtAction(nameof(Post), new {id = card.Id}, dto);
+            return CreatedAtAction(nameof(Post), new {id = card.Id}, card);
         }
 
         [HttpPut("{id}")]

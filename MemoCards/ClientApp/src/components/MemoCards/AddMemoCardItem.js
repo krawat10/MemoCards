@@ -44,7 +44,7 @@ const AddMemoCardItem = ({user, dispatch}) => {
         setDescription('');
     };
 
-    function add() {
+    async function add() {
         let memoCard = {
             name,
             description,
@@ -52,9 +52,11 @@ const AddMemoCardItem = ({user, dispatch}) => {
             updated: new Date(),
             userId: user.id
         };
-        dispatch(addMemoCard(memoCard));
+        ;
 
-        post('/memo', memoCard).then(value => console.log(value));
+        const memo = await post('/memo', memoCard);
+        dispatch(addMemoCard(memo))
+            // .then(value => dispatch(addMemoCard(value)));
 
         clearInput();
     }

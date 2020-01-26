@@ -23,6 +23,8 @@ const MemoCardItem = ({memoCard, deleteMemoCard}) => {
 
     async function submit() {
         try {
+            memoCard.name = name;
+            memoCard.description = description;
             await put('/memo/' + memoCard.id, memoCard);
         }
         catch (e) {

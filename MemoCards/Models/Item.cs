@@ -10,7 +10,7 @@ namespace MemoCards.Data
         [Key]
         [Column(name: "Id", TypeName = "uniqueidentifier")]
 
-        public Guid Id { get; protected set; }
+        public Guid Id { get; set; }
         public bool Obsolete { get; protected set; }
     }
 }

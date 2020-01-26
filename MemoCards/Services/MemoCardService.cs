@@ -62,8 +62,8 @@ namespace MemoCards.Services
         {
             var memoCard = await GetById(dto.Id);
 
-            memoCard.SetName(HttpUtility.HtmlEncode(HttpUtility.HtmlEncode(memoCard.Name)));
-            memoCard.SetDescription(HttpUtility.HtmlEncode(HttpUtility.HtmlEncode(memoCard.Description)));
+            memoCard.SetName(HttpUtility.HtmlEncode(dto.Name));
+            memoCard.SetDescription(HttpUtility.HtmlEncode(dto.Description));
 
             // UPDATE[MemoCards] [Description] = Description, [Name] = Name, [Updated] = Updated
             // WHERE[Id] = MemoIdId;
